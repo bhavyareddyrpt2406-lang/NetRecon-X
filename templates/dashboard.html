@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>NetRecon-X</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>🛡️ NetRecon-X</h1>
+
+    <p class="subtitle">
+        Network Reconnaissance & Security Analysis Tool
+    </p>
+
+    <div class="card">
+
+        <h2>Port Scanner</h2>
+
+        <form method="POST">
+
+            <input
+                type="text"
+                name="target"
+                placeholder="Enter IP Address"
+                required>
+
+            <button type="submit">
+                Scan
+            </button>
+
+        </form>
+
+        {% if results %}
+
+        <div class="results">
+
+            <h3>🔍 Scan Results</h3>
+
+            {% for result in results %}
+
+            <div class="result-card">
+
+                <strong>
+                    {{ result.port }}
+                </strong>
+
+                -
+
+                {{ result.service }}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
