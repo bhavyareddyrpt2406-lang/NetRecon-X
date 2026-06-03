@@ -22,14 +22,14 @@ NetRecon-X is a Python-based Network Reconnaissance and Security Analysis Tool d
 
 ## Current Progress
 
-* [x] Port Scanner
-* [x] Flask Dashboard
-* [x] Scan Results Integration
-* [ ] Scan History
-* [ ] SQLite Database
-* [ ] Network Discovery
-* [ ] Risk Scoring
-* [ ] AI Anomaly Detection
+- [x] Port Scanner
+- [x] Flask Dashboard
+- [x] Scan Results Integration
+- [x] Scan History
+- [ ] SQLite Database
+- [ ] Network Discovery
+- [ ] Risk Scoring
+- [ ] AI Anomaly Detection
 
 ## Project Goal
 
