@@ -20,7 +20,6 @@ PORTS = {
 
 
 def scan_target(target):
-
     results = []
 
     try:
@@ -34,24 +33,15 @@ def scan_target(target):
             result = s.connect_ex((target_ip, port))
 
             if result == 0:
-                results.append({
-                    "port": port,
-                    "service": service
-                })
+                results.append(f"{port} - {service}")
 
             s.close()
 
-    except:
-        results.append({
-            "port": "ERROR",
-            "service": "Invalid IP Address"
-        })
+        if len(results) == 0:
+            results.append("-- No open ports found")
 
-    if len(results) == 0:
-        results.append({
-            "port": "-",
-            "service": "No open ports found"
-        })
+    except:
+        results.append("Invalid IP Address or Hostname")
 
     return results
 
@@ -60,14 +50,28 @@ def scan_target(target):
 def home():
 
     results = []
+    history = []
 
     if request.method == "POST":
+
         target = request.form["target"]
+
         results = scan_target(target)
+
+        with open("scan_history.txt", "a") as file:
+            file.write(target + "\n")
+
+    try:
+        with open("scan_history.txt", "r") as file:
+            history = file.readlines()
+
+    except:
+        history = []
 
     return render_template(
         "dashboard.html",
-        results=results
+        results=results,
+        history=history
     )
 
 
