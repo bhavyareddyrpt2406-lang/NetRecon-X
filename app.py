@@ -18,9 +18,15 @@ PORTS = {
     3389: "RDP"
 }
 
+RISKY_PORTS = {
+    21: "FTP",
+    23: "Telnet"
+}
+
 
 def scan_target(target):
     results = []
+    risk_score = 0
 
     try:
         target_ip = socket.gethostbyname(target)
@@ -35,10 +41,22 @@ def scan_target(target):
             if result == 0:
                 results.append(f"{port} - {service}")
 
+                if port in RISKY_PORTS:
+                    risk_score += 1
+
             s.close()
 
         if len(results) == 0:
             results.append("-- No open ports found")
+
+        
+
+        if risk_score == 0:
+            results.append("Risk Level: LOW")
+        elif risk_score == 1:
+            results.append("Risk Level: MEDIUM")
+        else:
+            results.append("Risk Level: HIGH")
 
     except:
         results.append("Invalid IP Address or Hostname")
