@@ -17,7 +17,25 @@ PORTS = {
     3306: "MySQL",
     3389: "RDP"
 }
+def grab_banner(ip, port):
 
+    try:
+        s = socket.socket()
+        s.settimeout(2)
+
+        s.connect((ip, port))
+
+        if port == 80:
+            s.send(b"HEAD / HTTP/1.0\r\n\r\n")
+
+        banner = s.recv(1024).decode(errors="ignore")
+
+        s.close()
+
+        return banner.split("\n")[0]
+
+    except:
+        return "Banner not available"
 RISKY_PORTS = {
     21: "FTP",
     23: "Telnet"
@@ -39,7 +57,11 @@ def scan_target(target):
             result = s.connect_ex((target_ip, port))
 
             if result == 0:
+
+                banner = grab_banner(target_ip, port)
+
                 results.append(f"{port} - {service}")
+                results.append(f"Banner: {banner}")
 
                 if port in RISKY_PORTS:
                     risk_score += 1

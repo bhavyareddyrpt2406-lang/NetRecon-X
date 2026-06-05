@@ -2,3 +2,7 @@
 127.0.0.1
 google.com
 google.com
+scanme.nmap.org
+scanme.nmap.org
+192.168.31.130
+192.168.31.1
