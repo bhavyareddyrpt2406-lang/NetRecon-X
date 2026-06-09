@@ -1,5 +1,4 @@
 # NetRecon-X
-# NetRecon-X
 
 NetRecon-X is a Python-based Network Reconnaissance and Security Analysis Tool designed to identify open ports and analyze network services through an interactive web dashboard.
 
@@ -7,9 +6,13 @@ NetRecon-X is a Python-based Network Reconnaissance and Security Analysis Tool d
 
 * TCP Port Scanning
 * Service Detection
+* Banner Grabbing
+* Risk Assessment
+* Scan History
+* PDF Report Generation
+* PDF Report Download
 * Flask-Based Dashboard
 * Interactive Web Interface
-* Security Analysis Foundation
 * Scan Result Visualization
 
 ## Technologies Used
@@ -19,17 +22,35 @@ NetRecon-X is a Python-based Network Reconnaissance and Security Analysis Tool d
 * Socket Programming
 * HTML
 * CSS
+## Additional Libraries
 
+* ReportLab (PDF Report Generation)
 ## Current Progress
 
-- [x] Port Scanner
-- [x] Flask Dashboard
-- [x] Scan Results Integration
-- [x] Scan History
-- [ ] SQLite Database
-- [ ] Network Discovery
-- [ ] Risk Scoring
-- [ ] AI Anomaly Detection
+* [x] Port Scanner
+* [x] Flask Dashboard
+* [x] Scan Results Integration
+* [x] Scan History
+* [x] Risk Scoring
+* [x] Banner Grabbing
+* [x] PDF Report Generation
+* [x] PDF Report Download
+* [ ] SQLite Database
+* [ ] Network Discovery
+* [ ] Custom Port Range Scanning
+* [ ] AI Anomaly Detection
+## Future Enhancements
+
+* Custom Port Range Scanning
+* Service Version Detection
+* SQLite Database Integration
+* Network Discovery
+* Improved UI/UX
+* AI-Based Anomaly Detection
+
+## Additional Libraries
+
+* ReportLab (PDF Report Generation)
 
 ## Project Goal
 
