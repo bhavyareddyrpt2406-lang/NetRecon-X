@@ -57,3 +57,18 @@ button:hover{
     border-left:5px solid #38bdf8;
     border-radius:8px;
 }
+.download-btn {
+    background: #28a745;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.download-btn:hover {
+    transform: scale(1.05);
+}
