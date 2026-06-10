@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, send_file
 from reportlab.pdfgen import canvas
-from flask import Flask, render_template, request
 import socket
-
 
 app = Flask(__name__)
 
@@ -47,10 +45,12 @@ def grab_banner(ip, port):
 
 
 def scan_target(target):
+
     results = []
     risk_score = 0
 
     try:
+
         target_ip = socket.gethostbyname(target)
 
         for port, service in PORTS.items():
@@ -64,8 +64,11 @@ def scan_target(target):
 
                 banner = grab_banner(target_ip, port)
 
-                results.append(f"{port} - {service}")
-                results.append(f"Banner: {banner}")
+                results.append({
+                    "port": port,
+                    "service": service,
+                    "banner": banner
+                })
 
                 if port in RISKY_PORTS:
                     risk_score += 1
@@ -73,19 +76,57 @@ def scan_target(target):
             s.close()
 
         if len(results) == 0:
-            results.append("-- No open ports found")
+            results.append({
+                "port": "None",
+                "service": "No open ports found",
+                "banner": "-"
+            })
 
         if risk_score == 0:
-            results.append("Risk Level: LOW")
+            risk_level = "LOW"
         elif risk_score == 1:
-            results.append("Risk Level: MEDIUM")
+            risk_level = "MEDIUM"
         else:
-            results.append("Risk Level: HIGH")
+            risk_level = "HIGH"
+
+        return results, risk_level
 
     except Exception as e:
-        results.append(f"Error: {str(e)}")
 
-    return results
+        results.append({
+            "port": "Error",
+            "service": str(e),
+            "banner": "-"
+        })
+
+        return results, "LOW"
+
+
+def generate_pdf(results):
+
+    pdf = canvas.Canvas("scan_report.pdf")
+
+    y = 800
+
+    pdf.drawString(100, y, "NetRecon-X Scan Report")
+    y -= 40
+
+    for result in results:
+
+        line = f"Port {result['port']} - {result['service']}"
+
+        pdf.drawString(100, y, line)
+        y -= 20
+
+        pdf.drawString(
+            120,
+            y,
+            f"Banner: {result['banner']}"
+        )
+
+        y -= 30
+
+    pdf.save()
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -93,12 +134,14 @@ def home():
 
     results = []
     history = []
+    risk_level = None
 
     if request.method == "POST":
 
         target = request.form["target"]
 
-        results = scan_target(target)
+        results, risk_level = scan_target(target)
+
         generate_pdf(results)
 
         with open("scan_history.txt", "a") as file:
@@ -114,28 +157,19 @@ def home():
     return render_template(
         "dashboard.html",
         results=results,
-        history=history
+        history=history,
+        risk_level=risk_level
     )
-def generate_pdf(results):
-    pdf = canvas.Canvas("scan_report.pdf")
 
-    y = 800
-    pdf.drawString(100, y, "NetRecon-X Scan Report")
-
-    y -= 40
-
-    for result in results:
-        pdf.drawString(100, y, result)
-        y -= 20
-
-    pdf.save()
 
 @app.route("/download")
 def download():
+
     return send_file(
         "scan_report.pdf",
         as_attachment=True
     )
+
 
 if __name__ == "__main__":
     app.run(debug=True)
