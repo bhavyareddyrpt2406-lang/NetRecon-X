@@ -1,4 +1,11 @@
-from flask import Flask, render_template, request, send_file
+from flask import (
+    Flask,
+    render_template,
+    request,
+    send_file,
+    redirect,
+    url_for
+)
 from reportlab.pdfgen import canvas
 import socket
 
@@ -102,48 +109,135 @@ def scan_target(target):
         return results, "LOW"
 
 
-def generate_pdf(results):
+def generate_pdf(results, target, risk_level, target_ip):
 
     pdf = canvas.Canvas("scan_report.pdf")
 
     y = 800
 
-    pdf.drawString(100, y, "NetRecon-X Scan Report")
+    # Title
+    pdf.setFont("Helvetica-Bold", 18)
+    pdf.drawString(150, y, "NETRECON-X SECURITY REPORT")
+
     y -= 40
+
+    pdf.setFont("Helvetica", 12)
+
+    pdf.drawString(50, y, f"Target: {target}")
+    y -= 20
+
+    pdf.drawString(50, y, f"IP Address: {target_ip}")
+    y -= 20
+
+    pdf.drawString(50, y, f"Risk Level: {risk_level}")
+
+    y -= 30
+
+    pdf.line(50, y, 550, y)
+
+    y -= 30
+
+    # Open Ports Section
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "OPEN PORTS")
+
+    y -= 25
+
+    pdf.setFont("Helvetica", 12)
 
     for result in results:
 
-        line = f"Port {result['port']} - {result['service']}"
-
-        pdf.drawString(100, y, line)
-        y -= 20
-
         pdf.drawString(
-            120,
+            60,
             y,
-            f"Banner: {result['banner']}"
+            f"Port {result['port']} - {result['service']}"
         )
 
-        y -= 30
+        y -= 20
+
+    y -= 10
+
+    pdf.line(50, y, 550, y)
+
+    y -= 30
+
+    # Banner Section
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "BANNER INFORMATION")
+
+    y -= 25
+
+    pdf.setFont("Helvetica", 12)
+
+    for result in results:
+
+        pdf.drawString(
+            60,
+            y,
+            f"{result['service']}:"
+        )
+
+        y -= 20
+
+        banner = str(result['banner'])[:80]
+
+        pdf.drawString(
+            80,
+            y,
+            banner
+        )
+
+        y -= 25
+
+    pdf.line(50, y, 550, y)
+
+    y -= 30
+
+    # Recommendations
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "SECURITY RECOMMENDATIONS")
+
+    y -= 25
+
+    pdf.setFont("Helvetica", 12)
+
+    recommendations = [
+        "Close unnecessary services",
+        "Restrict public exposure of open ports",
+        "Disable insecure protocols such as Telnet and FTP",
+        "Monitor network activity regularly"
+    ]
+
+    for rec in recommendations:
+
+        pdf.drawString(60, y, f"- {rec}")
+
+        y -= 20
 
     pdf.save()
-
-
 @app.route("/", methods=["GET", "POST"])
 def home():
 
     results = []
     history = []
     risk_level = None
+    target_ip = None
+    target_name = None    
 
     if request.method == "POST":
 
         target = request.form["target"]
+        target_name = target
+        target_ip = socket.gethostbyname(target)
 
         results, risk_level = scan_target(target)
 
-        generate_pdf(results)
-
+        generate_pdf(
+            results,
+            target,
+            risk_level,
+            target_ip
+        )
         with open("scan_history.txt", "a") as file:
             file.write(target + "\n")
 
@@ -158,9 +252,17 @@ def home():
         "dashboard.html",
         results=results,
         history=history,
-        risk_level=risk_level
+        risk_level=risk_level,
+        target_name=target_name,
+        target_ip=target_ip
     )
 
+@app.route("/clear_history")
+def clear_history():
+
+    open("scan_history.txt", "w").close()
+
+    return redirect(url_for("home"))
 
 @app.route("/download")
 def download():

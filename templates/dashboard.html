@@ -39,6 +39,23 @@
         </div>
 
     </div>
+    {% if target_name %}
+
+<div class="card">
+
+    <h2>🎯 Target Information</h2>
+
+    <p><strong>Target:</strong> {{ target_name }}</p>
+
+    <p><strong>IP Address:</strong> {{ target_ip }}</p>
+
+    <p><strong>Status:</strong> Online</p>
+
+    <p><strong>Risk Level:</strong> {{ risk_level }}</p>
+
+</div>
+
+{% endif %}
 
     <!-- Scanner Card -->
     <div class="card">
@@ -109,7 +126,17 @@
     <!-- History -->
     <div class="card history-card">
 
-        <h2>📜 Scan History</h2>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+
+            <h2>📜 Scan History</h2>
+
+            <button
+                class="download-btn"
+                onclick="confirmDelete()">
+                🗑️ Clear History
+            </button>
+
+        </div>
 
         {% if history %}
 
@@ -132,6 +159,22 @@
     </div>
 
 </div>
+
+<script>
+
+function confirmDelete() {
+
+    let result = confirm(
+        "Are you sure you want to delete all scan history?"
+    );
+
+    if(result){
+        window.location.href = "/clear_history";
+    }
+
+}
+
+</script>
 
 </body>
 </html>
