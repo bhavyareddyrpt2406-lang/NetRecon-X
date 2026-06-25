@@ -105,6 +105,15 @@ input{
 input:focus{
     border:1px solid #38bdf8;
 }
+.port-range{
+    display:flex;
+    gap:10px;
+    width:100%;
+}
+
+.port-range input{
+    min-width:120px;
+}
 
 /* Buttons */
 

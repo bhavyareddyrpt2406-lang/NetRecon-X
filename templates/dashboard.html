@@ -64,17 +64,37 @@
 
         <form method="POST">
 
-            <input
-                type="text"
-                name="target"
-                placeholder="Enter IP Address or Hostname"
-                required>
+    <input
+        type="text"
+        name="target"
+        placeholder="Enter IP Address or Hostname"
+        required>
 
-            <button type="submit">
-                Scan Target
-            </button>
+    <div class="port-range">
 
-        </form>
+        <input
+            type="number"
+            name="start_port"
+            placeholder="Start Port"
+            value="1"
+            min="1"
+            max="65535">
+
+        <input
+            type="number"
+            name="end_port"
+            placeholder="End Port"
+            value="1024"
+            min="1"
+            max="65535">
+
+    </div>
+
+    <button type="submit">
+        Scan Target
+    </button>
+
+</form>
 
         {% if results %}
 

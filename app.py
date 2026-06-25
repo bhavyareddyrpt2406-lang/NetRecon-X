@@ -51,7 +51,7 @@ def grab_banner(ip, port):
         return "Banner not available"
 
 
-def scan_target(target):
+def scan_target(target, start_port, end_port):
 
     results = []
     risk_score = 0
@@ -61,6 +61,9 @@ def scan_target(target):
         target_ip = socket.gethostbyname(target)
 
         for port, service in PORTS.items():
+
+            if port < start_port or port > end_port:
+                continue
 
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(1)
@@ -107,7 +110,6 @@ def scan_target(target):
         })
 
         return results, "LOW"
-
 
 def generate_pdf(results, target, risk_level, target_ip):
 
@@ -226,11 +228,23 @@ def home():
 
     if request.method == "POST":
 
+
         target = request.form["target"]
+
+        start_port = int(request.form["start_port"])
+        end_port = int(request.form["end_port"])
+
+        if start_port > end_port:
+            start_port, end_port = end_port, start_port
+
         target_name = target
         target_ip = socket.gethostbyname(target)
 
-        results, risk_level = scan_target(target)
+        results, risk_level = scan_target(
+            target,
+            start_port,
+            end_port
+        )
 
         generate_pdf(
             results,
@@ -238,8 +252,12 @@ def home():
             risk_level,
             target_ip
         )
+
         with open("scan_history.txt", "a") as file:
-            file.write(target + "\n")
+            file.write(
+        f"{target} | Ports {start_port}-{end_port}\n"
+    )
+
 
     try:
         with open("scan_history.txt", "r") as file:
