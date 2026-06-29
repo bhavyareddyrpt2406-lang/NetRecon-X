@@ -39,23 +39,24 @@
         </div>
 
     </div>
+
     {% if target_name %}
 
-<div class="card">
+    <div class="card">
 
-    <h2>🎯 Target Information</h2>
+        <h2>🎯 Target Information</h2>
 
-    <p><strong>Target:</strong> {{ target_name }}</p>
+        <p><strong>Target:</strong> {{ target_name }}</p>
 
-    <p><strong>IP Address:</strong> {{ target_ip }}</p>
+        <p><strong>IP Address:</strong> {{ target_ip }}</p>
 
-    <p><strong>Status:</strong> Online</p>
+        <p><strong>Status:</strong> Online</p>
 
-    <p><strong>Risk Level:</strong> {{ risk_level }}</p>
+        <p><strong>Risk Level:</strong> {{ risk_level }}</p>
 
-</div>
+    </div>
 
-{% endif %}
+    {% endif %}
 
     <!-- Scanner Card -->
     <div class="card">
@@ -64,37 +65,37 @@
 
         <form method="POST">
 
-    <input
-        type="text"
-        name="target"
-        placeholder="Enter IP Address or Hostname"
-        required>
+            <input
+                type="text"
+                name="target"
+                placeholder="Enter IP Address or Hostname"
+                required>
 
-    <div class="port-range">
+            <div class="port-range">
 
-        <input
-            type="number"
-            name="start_port"
-            placeholder="Start Port"
-            value="1"
-            min="1"
-            max="65535">
+                <input
+                    type="number"
+                    name="start_port"
+                    placeholder="Start Port"
+                    value="1"
+                    min="1"
+                    max="65535">
 
-        <input
-            type="number"
-            name="end_port"
-            placeholder="End Port"
-            value="1024"
-            min="1"
-            max="65535">
+                <input
+                    type="number"
+                    name="end_port"
+                    placeholder="End Port"
+                    value="1024"
+                    min="1"
+                    max="65535">
 
-    </div>
+            </div>
 
-    <button type="submit">
-        Scan Target
-    </button>
+            <button type="submit">
+                Scan Target
+            </button>
 
-</form>
+        </form>
 
         {% if results %}
 
